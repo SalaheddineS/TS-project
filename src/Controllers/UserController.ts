@@ -1,7 +1,7 @@
 import User from "../Models/User";
 import { Request, Response } from "express";
 import { IUser } from "../Models/Interfaces/IUser";
-
+import bcrypt from "bcrypt";
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
@@ -25,6 +25,8 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   const user: IUser = req.body;
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
   const newUser = new User(user);
   try {
     await newUser.save();

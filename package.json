@@ -10,7 +10,9 @@
     "start": "npx nodemon"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/mongoose": "^5.11.97",
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongoose": "^5.13.15",

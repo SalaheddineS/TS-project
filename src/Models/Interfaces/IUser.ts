@@ -1,31 +1,19 @@
-import { Document } from "mongoose";
+export interface IUser {
+  name: String;
 
-export interface IUser extends Document {
-  name: {
-    type: String;
-  };
-  lastname: {
-    type: String;
-  };
-  email: {
-    type: String;
-  };
-  address: {
-    type: String;
-  };
-  phone: {
-    type: String;
-  };
-  password: {
-    type: String;
-  };
-  role: {
-    type: String;
-  };
-  isAdmin: {
-    type: Boolean;
-  };
-  image: {
-    type: String;
-  };
+  lastname: String;
+
+  email: String;
+
+  address: String;
+
+  phone: String;
+
+  password: string;
+
+  role: String;
+
+  isAdmin: Boolean;
+
+  image: String;
 }
