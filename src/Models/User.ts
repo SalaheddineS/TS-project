@@ -43,6 +43,11 @@ const UserSchema = new mongoose.Schema<IUser>({
         required: true,
         default: false,
     },
+    isSeller: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     image: {
         type: String,
         required: true,
