@@ -1,7 +1,7 @@
 import Mongoose,{model} from "mongoose";
-import {IProduct} from "./Interfaces/IProduct";
 
-const ProductSchema = new Mongoose.Schema<IProduct>({
+
+const ProductSchema = new Mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -46,4 +46,4 @@ const ProductSchema = new Mongoose.Schema<IProduct>({
     },
 });
 
-export default model<IProduct>("Product", ProductSchema);
+export default model("Product", ProductSchema);

@@ -103,3 +103,13 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const deleteUserByEmail = async (req: Request, res: Response) => {
+  const email = req.params.email;
+  try {
+    User.findOne({ email: email }).remove().exec();
+    res.json({ message: "User with the email: " + email + " is deleted" });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+};
