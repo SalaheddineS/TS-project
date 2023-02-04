@@ -1,8 +1,8 @@
 import {Router} from "express";
-import {login,logout,VerifyToken} from "../Controllers/AuthController";
+import {login,logout} from "../Controllers/AuthController";
+import {Authenticated,NotAuthenticated} from "../../Middlewares/AuthenticatedMiddleware";
 const router = Router();
 
-router.post("/login", login);
-router.post("/logout", logout);
-router.get("/verify", VerifyToken);
+router.post("/login",NotAuthenticated,login);
+router.post("/logout",Authenticated,logout);
 export default router;

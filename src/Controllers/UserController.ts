@@ -1,4 +1,6 @@
 import User from "../Models/User";
+import { City_Enum } from "../../Enums/City_Enum";
+import { gender_Enum } from "../../Enums/Gender_Enum";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 export const getUsers = async (req: Request, res: Response) => {
@@ -23,7 +25,17 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const user= req.body;
+  const user = req.body;
+
+  if (await User.findOne({ email: user.email })) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+  if (!(user.city in City_Enum)) {
+    return res.status(400).json({ message: "City not found" });
+  }
+  if (!(user.gender in gender_Enum)) {
+    return res.status(400).json({ message: "Wrong gender" });
+  }
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   const newUser = new User(user);
@@ -31,9 +43,7 @@ export const createUser = async (req: Request, res: Response) => {
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err: any) {
-    res
-      .status(400)
-      .json({ Erreur: "Erreur Du server Ou Utilisateur Existant" });
+    res.status(400).json({ Erreur: "Erreur Du server" });
   }
 };
 
@@ -51,6 +61,9 @@ export const updateUser = async (req: Request, res: Response) => {
     }
     if (req.body.email != null) {
       user.email = req.body.email;
+    }
+    if (req.body.city != null) {
+      user.city = req.body.city;
     }
     if (req.body.address != null) {
       user.address = req.body.address;
