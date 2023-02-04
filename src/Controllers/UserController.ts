@@ -1,6 +1,5 @@
 import User from "../Models/User";
 import { Request, Response } from "express";
-import { IUser } from "../Models/Interfaces/IUser";
 import bcrypt from "bcrypt";
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -24,7 +23,7 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const user: IUser = req.body;
+  const user= req.body;
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
   const newUser = new User(user);
@@ -32,7 +31,9 @@ export const createUser = async (req: Request, res: Response) => {
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    res
+      .status(400)
+      .json({ Erreur: "Erreur Du server Ou Utilisateur Existant" });
   }
 };
 
@@ -60,9 +61,10 @@ export const updateUser = async (req: Request, res: Response) => {
     if (req.body.password != null) {
       user.password = req.body.password;
     }
-    if (req.body.role != null) {
-      user.role = req.body.role;
+    if (req.body.isSeller != null) {
+      user.isSeller = req.body.isSeller;
     }
+
     if (req.body.isAdmin != null) {
       user.isAdmin = req.body.isAdmin;
     }

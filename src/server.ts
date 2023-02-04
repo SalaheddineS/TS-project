@@ -16,6 +16,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", UserRouter);
 app.use("/api/auth", AuthRouter);
+
 connect(process.env.MONGO_URL)
   .then(() => {
     app.listen(process.env.PORT);

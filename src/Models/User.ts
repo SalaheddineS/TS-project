@@ -1,6 +1,7 @@
 import mongoose,{ model } from "mongoose";
-import { IUser } from "./Interfaces/IUser";
-const UserSchema = new mongoose.Schema<IUser>({
+
+
+const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -34,10 +35,6 @@ const UserSchema = new mongoose.Schema<IUser>({
         type: String,
         required: true,
     },
-    role: {
-        type: String,
-        required: true,
-    },
     isAdmin : {
         type: Boolean,
         required: true,
@@ -55,5 +52,5 @@ const UserSchema = new mongoose.Schema<IUser>({
     },
 });
 
-export default model<IUser>("User", UserSchema);
+export default model("User", UserSchema);
 
