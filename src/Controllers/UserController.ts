@@ -2,7 +2,9 @@ import User from "../Models/User";
 import { City_Enum } from "../../Enums/City_Enum";
 import { gender_Enum } from "../../Enums/Gender_Enum";
 import { Request, Response } from "express";
+import { CreateCart } from "./CartController";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
@@ -25,8 +27,14 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
+  const decoded = jwt.decode(req.cookies.token) as { id: string };
+  const admin = await User.findById(decoded.id);
   const user = req.body;
-
+  if (user.isAdmin && !admin.isAdmin) {
+    return res
+      .status(400)
+      .json({ message: "You need to be an Admin to add a new Admin" });
+  }
   if (await User.findOne({ email: user.email })) {
     return res.status(400).json({ message: "User already exists" });
   }
@@ -38,10 +46,18 @@ export const createUser = async (req: Request, res: Response) => {
   }
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
-  const newUser = new User(user);
+  const newUser: any = new User(user);
+  if (!newUser["image"]) {
+    newUser.image =
+      "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
+  }
+
   try {
-    await newUser.save();
-    res.status(201).json(newUser);
+    const usr = await newUser.save().then((user: any) => {
+      CreateCart(req, res, user._id); // Create Cart Simultaneously when creating user
+    });
+
+    res.status(201).json("Nouvel utilisateur crée avec succès");
   } catch (err: any) {
     res.status(400).json({ Erreur: "Erreur Du server" });
   }

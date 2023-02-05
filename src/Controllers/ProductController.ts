@@ -37,20 +37,23 @@ export const createProduct = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Missing data" });
   if (!(req.body.category in ProductCat_Enum))
     return res.status(400).json({ message: "Category not found" });
+  const Verify = Product.find({ name: req.body.name });
+  if (Verify != null)
+    return res.status(400).json({ message: "Product already exists" });
   const product = new Product({
     name: req.body.name,
     price: req.body.price,
     image: req.body.image,
     brand: req.body.brand,
     category: req.body.category,
-    countInStock: req.body.countInStock,
+    stock: req.body.countInStock,
     description: req.body.description,
     rating: req.body.rating,
     numReviews: req.body.numReviews,
   });
   try {
-    const newProduct = await product.save();
-    res.status(201).json(newProduct);
+    await product.save();
+    res.status(201).json("Product Created");
   } catch (err: any) {
     res.status(400).json({ Erreur: "Erreur Du server" });
   }

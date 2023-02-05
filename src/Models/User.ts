@@ -57,17 +57,12 @@ const UserSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    required: true,
-    default: process.env.DEFAULT_IMAGE,
+    required: false,
   },
   createdAt: {
     type: Date,
     default: Date.now,
-  },
-  cart: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Cart",
-  },
+  }
 });
 
 export default model("User", UserSchema);
