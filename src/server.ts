@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import UserRouter from "./Routers/UserRouter";
 import AuthRouter from "./Routers/AuthRouter";
 import ProductRouter from "./Routers/ProductRouter";
+import CartRouter from "./Routers/CartRouter";
 import cookieParser from "cookie-parser";
 
 config(); // Load .env file
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", UserRouter);
 app.use("/api/auth", AuthRouter);
 app.use("/api/products", ProductRouter);
-
+app.use("/api/cart", CartRouter);
 connect(process.env.MONGO_URL)
   .then(() => {
     app.listen(process.env.PORT);
