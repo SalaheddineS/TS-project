@@ -2,14 +2,13 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import User from "../Models/User";
 import Cart from "../Models/Cart";
-import Product from "../Models/Product";
+import { RequestWithUser } from "../../Overriden_Interfaces/RequestWithUser";
 
-export const addToCart = async (req: Request, res: Response) => {
+export const addToCart = async (req: RequestWithUser, res: Response) => {
   const { productId, quantity } = req.body;
-
+  const user = req.user;
   try {
-    const decoded = jwt.decode(req.cookies.token) as { id: string };
-    const user = await User.findById(decoded.id);
+    
     if (!productId)
       return res.status(400).json({ message: "Product id is required" });
     if (quantity < 1)
@@ -32,10 +31,9 @@ export const addToCart = async (req: Request, res: Response) => {
   }
 };
 
-export const viewCart = async (req: Request, res: Response) => {
+export const viewCart = async (req: RequestWithUser, res: Response) => {
   const decoded = jwt.decode(req.cookies.token) as { id: string };
-  const user = await User.findById(decoded.id);
-  if (!user) return res.status(400).json({ message: "User not found" });
+  const user = req.user;
   const cart = await Cart.findOne({ user: user?._id }).populate(
     "products.product"
   );
@@ -55,10 +53,9 @@ export const CreateCart = async (req: Request, res: Response, id: any) => {
   await cart.save();
 };
 
-export const removefromCart = async (req: Request, res: Response) => {
+export const removefromCart = async (req: RequestWithUser, res: Response) => {
   const decoded = jwt.decode(req.cookies.token) as { id: string };
-  const user = await User.findById(decoded.id);
-  if (!user) return res.status(400).json({ message: "User not found" });
+  const user = req.user;
   const cart = await Cart.findOne({ user: user?._id });
   if (!cart) return res.status(400).json({ message: "Cart not found" });
   const { productId } = req.body;
@@ -69,10 +66,9 @@ export const removefromCart = async (req: Request, res: Response) => {
   return res.status(200).json({ message: "Product removed from cart" });
 };
 
-export const updateCart = async (req: Request, res: Response) => {
+export const updateCart = async (req: RequestWithUser, res: Response) => {
   const decoded = jwt.decode(req.cookies.token) as { id: string };
-  const user = await User.findById(decoded.id);
-  if (!user) return res.status(400).json({ message: "User not found" });
+  const user = req.user;
   const cart = await Cart.findOne({ user: user?._id });
   if (!cart) return res.status(400).json({ message: "Cart not found" });
   const { productId, quantity } = req.body;
@@ -87,10 +83,8 @@ export const updateCart = async (req: Request, res: Response) => {
   return res.status(200).json({ message: "Cart updated" });
 };
 
-export const clearCart = async (req: Request, res: Response) => {
-  const decoded = jwt.decode(req.cookies.token) as { id: string };
-  const user = await User.findById(decoded.id);
-  if (!user) return res.status(400).json({ message: "User not found" });
+export const clearCart = async (req: RequestWithUser, res: Response) => {
+  const user = req.user;
   const cart = await Cart.findOne({ user: user?._id });
   if (!cart) return res.status(400).json({ message: "Cart not found" });
   cart.products = [];

@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import { CreateCart } from "./CartController";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { RequestWithUser } from "../../Overriden_Interfaces/RequestWithUser";
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
@@ -26,9 +27,8 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
-export const createUser = async (req: Request, res: Response) => {
-  const decoded = jwt.decode(req.cookies.token) as { id: string };
-  const admin = await User.findById(decoded.id);
+export const createUser = async (req: RequestWithUser, res: Response) => {
+  const admin = req.user;
   const user = req.body;
   if (user.isAdmin && !admin.isAdmin) {
     return res
@@ -53,7 +53,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const usr = await newUser.save().then((user: any) => {
+    await newUser.save().then((user: any) => {
       CreateCart(req, res, user._id); // Create Cart Simultaneously when creating user
     });
 
