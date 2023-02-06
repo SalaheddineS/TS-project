@@ -32,7 +32,6 @@ export const addToCart = async (req: RequestWithUser, res: Response) => {
 };
 
 export const viewCart = async (req: RequestWithUser, res: Response) => {
-  const decoded = jwt.decode(req.cookies.token) as { id: string };
   const user = req.user;
   const cart = await Cart.findOne({ user: user?._id }).populate(
     "products.product"
@@ -54,7 +53,6 @@ export const CreateCart = async (req: Request, res: Response, id: any) => {
 };
 
 export const removefromCart = async (req: RequestWithUser, res: Response) => {
-  const decoded = jwt.decode(req.cookies.token) as { id: string };
   const user = req.user;
   const cart = await Cart.findOne({ user: user?._id });
   if (!cart) return res.status(400).json({ message: "Cart not found" });

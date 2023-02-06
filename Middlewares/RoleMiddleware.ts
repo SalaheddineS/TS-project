@@ -39,6 +39,7 @@ export const SellerVerify = async (req: RequestWithUser, res: Response, next: an
 };
 
 export const UserVerify = async (req: RequestWithUser, res: Response, next: any) => {
+ 
   const token = req.cookies.token;
   if (!token) return res.status(400).json({ message: "Token is not provided" });
   if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is not defined");

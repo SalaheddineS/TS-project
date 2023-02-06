@@ -6,22 +6,33 @@ import { CreateCart } from "./CartController";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { RequestWithUser } from "../../Overriden_Interfaces/RequestWithUser";
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (req: RequestWithUser, res: Response) => {
   try {
-    const users = await User.find();
+    const users = req.user;
+    if (users.isAdmin) {
+      const users = await User.find({});
+      res.json(users);
+    } else {
+      res.status(401).json({ message: "You are not an Admin" });
+    }
     res.json(users);
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
 };
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (req: RequestWithUser, res: Response) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (user == null) {
-      return res.status(404).json({ message: "User not found" });
+    if (req.user._id == req.params.id) {
+      return res.status(200).json(req.user);
     }
-    res.json(user);
+    if (req.user.isAdmin) {
+      const user = await User.findById(req.params.id);
+      if (user == null) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      return res.json(user);
+    }
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
@@ -63,12 +74,47 @@ export const createUser = async (req: RequestWithUser, res: Response) => {
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (user == null) {
-      return res.status(404).json({ message: "User not found" });
+export const updateUser = async (req: RequestWithUser, res: Response) => {
+  if (req.user._id == req.params.id) {
+    if (
+      req.body.isAdmin != null ||
+      req.body.isSeller != null ||
+      req.body.isAdmin == null ||
+      req.body.isSeller == null
+    ) {
+      return res.status(400).json({ message: "You can't change the role" });
     }
+    if (req.body.name != null) {
+      req.user.name = req.body.name;
+    }
+    if (req.body.lastname != null) {
+      req.user.lastname = req.body.lastname;
+    }
+    if (req.body.email != null) {
+      const mails = User.find({ email: req.body.email });
+      if (mails) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+      req.user.email = req.body.email;
+    }
+    if (req.body.city != null) {
+      req.user.city = req.body.city;
+    }
+    if (req.body.address != null) {
+      req.user.address = req.body.address;
+    }
+    if (req.body.phone != null) {
+      req.user.phone = req.body.phone;
+    }
+    if (req.body.password != null) {
+      req.user.password = req.body.password;
+    }
+    if (req.body.image != null) {
+      req.user.image = req.body.image;
+    }
+  }
+  if (req.user.isAdmin) {
+    const user = await User.findById(req.params.id);
     if (req.body.name != null) {
       user.name = req.body.name;
     }
@@ -76,6 +122,10 @@ export const updateUser = async (req: Request, res: Response) => {
       user.lastname = req.body.lastname;
     }
     if (req.body.email != null) {
+      const mails = User.find({ email: req.body.email });
+      if (mails) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
       user.email = req.body.email;
     }
     if (req.body.city != null) {
@@ -93,17 +143,12 @@ export const updateUser = async (req: Request, res: Response) => {
     if (req.body.isSeller != null) {
       user.isSeller = req.body.isSeller;
     }
-
     if (req.body.isAdmin != null) {
       user.isAdmin = req.body.isAdmin;
     }
     if (req.body.image != null) {
       user.image = req.body.image;
     }
-    const updatedUser = await user.save();
-    res.json(updatedUser);
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
   }
 };
 
