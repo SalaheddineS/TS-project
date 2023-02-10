@@ -55,3 +55,11 @@ export const UserVerify = async (req: RequestWithUser, res: Response, next: any)
     return res.status(400).json({ message: "Token is not valid" });
   }
 };
+
+const RoleMiddleware = {
+  AdminVerify,
+  SellerVerify,
+  UserVerify,
+};
+
+export default RoleMiddleware;

@@ -120,3 +120,14 @@ export const deleteProductByName = async (req: Request, res: Response) => {
     res.json({ message: "Product deleted" });
   });
 };
+
+const ProductController = {
+  getProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  deleteProductByName,
+};
+
+export default ProductController;

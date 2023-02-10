@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
+
 import { Request, Response } from "express";
-import User from "../Models/User";
 import Cart from "../Models/Cart";
 import { RequestWithUser } from "../../Overriden_Interfaces/RequestWithUser";
+
 
 export const addToCart = async (req: RequestWithUser, res: Response) => {
   const { productId, quantity } = req.body;
@@ -65,7 +65,6 @@ export const removefromCart = async (req: RequestWithUser, res: Response) => {
 };
 
 export const updateCart = async (req: RequestWithUser, res: Response) => {
-  const decoded = jwt.decode(req.cookies.token) as { id: string };
   const user = req.user;
   const cart = await Cart.findOne({ user: user?._id });
   if (!cart) return res.status(400).json({ message: "Cart not found" });
