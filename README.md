@@ -1,4 +1,4 @@
-# Under Construction Template
+# Under Construction 
 > A simple, minimalistic & cross-device App
 
 
