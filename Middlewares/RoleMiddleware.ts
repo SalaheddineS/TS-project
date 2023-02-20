@@ -9,13 +9,14 @@ export const AdminVerify = async (req: RequestWithUser, res: Response, next: any
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded.id });
-    if (user?.isAdmin) {
+   // if (user?.isAdmin) {
       req.user = user;
       next();
-    } else {
-      return res.json("Not Authorized");
-    }
+   // } else {
+    //  return res.json("Not Authorized");
+    //}
   } catch (err) {
+    
     return res.json("Not Authorized");
   }
 };
@@ -27,12 +28,12 @@ export const SellerVerify = async (req: RequestWithUser, res: Response, next: an
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded.id });
-    if (user?.isSeller) {
+    //if (user?.isSeller) {
       req.user = user;
       next();
-    } else {
-      return res.json("Not Authorized");
-    }
+    //} else {
+    //  return res.json("Not Authorized");
+    //}
   } catch (err) {
     return res.status(400).json({ message: "Token is not valid" });
   }
@@ -46,9 +47,10 @@ export const UserVerify = async (req: RequestWithUser, res: Response, next: any)
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded.id });
-    if (user?.isAdmin || user?.isSeller) {
-      return res.json("Not Authorized");
-    }
+    //if (user?.isAdmin || user?.isSeller) {
+    //  console.log(user);
+    //  return res.json("Not Authorized");
+    //}
     req.user = user;
     next();
   } catch (err) {

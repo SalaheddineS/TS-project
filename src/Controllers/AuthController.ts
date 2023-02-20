@@ -18,7 +18,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Email or password are incorrect" });
   if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET is not defined");
   const token = jwt.sign({ id: currentUserInDB._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "24h",
   });
   res.cookie("token", token, { httpOnly: true });
   res.json("Successfully logged in");
